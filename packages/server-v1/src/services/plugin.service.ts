@@ -19,7 +19,7 @@ function getDbPool(): Pool {
       port: parseInt(process.env.DB_PORT || '5432'),
       database: process.env.DB_DATABASE || 'dam_demo',
       user: process.env.DB_USER || 'postgres',
-      password: process.env.DB_PASSWORD || 'postgres',
+      password: process.env.DB_PASSWORD || '',
     };
     console.log('🗄️  [PLUGIN SERVICE] Creating database pool with config:', {
       host: dbConfig.host,
@@ -100,7 +100,7 @@ export class PluginService implements Provider<PluginService> {
     @inject('config.externalApiUrl', { optional: true })
     private externalApiUrl?: string,
   ) {
-    this.apiKey = apiKey || process.env.API_KEY || 'default-api-key';
+    this.apiKey = apiKey || process.env.API_KEY || '';
     this.externalApiUrl = externalApiUrl || process.env.EXTERNAL_API_URL || '';
   }
 
