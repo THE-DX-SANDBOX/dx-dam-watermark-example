@@ -1,0 +1,16 @@
+{
+  "name": "@dam-plugin/shared",
+  "version": "1.0.0",
+  "description": "Shared tiling math and types for DAM watermark plugin",
+  "license": "SEE LICENSE IN LICENSE",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0"
+  }
+}

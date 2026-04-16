@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/lerna/schemas/lerna-schema.json",
+  "version": "1.0.0",
+  "packages": [
+    "packages/*"
+  ],
+  "npmClient": "npm",
+  "useWorkspaces": false,
+  "command": {
+    "bootstrap": {
+      "hoist": true
+    },
+    "publish": {
+      "ignoreChanges": [
+        "*.md",
+        "test/**",
+        "**/__tests__/**"
+      ]
+    }
+  }
+}

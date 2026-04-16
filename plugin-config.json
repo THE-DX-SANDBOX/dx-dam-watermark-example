@@ -1,0 +1,28 @@
+{
+  "pluginName": "dam-plugin",
+  "pluginDisplayName": "dam-plugin",
+  "pluginDescription": "Test",
+  "pluginAuthor": "HCL",
+  "pluginVersion": "1.0.0",
+  "apiVersion": "v1",
+  "servicePort": 3000,
+  "externalServiceConfig": {
+    "apiKeyEnvVar": "EXTERNAL_API_KEY",
+    "apiUrlEnvVar": "EXTERNAL_API_URL",
+    "timeoutMs": 30000
+  },
+  "damIntegration": {
+    "requiresAuthentication": true,
+    "supportedFileTypes": ["image/jpeg", "image/png", "image/gif", "image/webp"],
+    "maxFileSizeMB": 100,
+    "callbackRequired": true
+  },
+  "kubernetes": {
+    "namespace": "dam-plugins",
+    "replicas": 2,
+    "cpuRequest": "100m",
+    "cpuLimit": "500m",
+    "memoryRequest": "256Mi",
+    "memoryLimit": "512Mi"
+  }
+}

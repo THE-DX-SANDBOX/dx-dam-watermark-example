@@ -1,0 +1,76 @@
+# Production values for DAM Plugin
+# Use internal ClusterIP for security and performance
+
+replicaCount: 3
+
+image:
+  repository: your-registry/dam-plugin
+  pullPolicy: Always
+  tag: "latest"
+
+# Service configuration - Internal only
+service:
+  type: ClusterIP
+  port: 3000
+  targetPort: 3000
+
+# Disable Ingress for pure internal deployment
+ingress:
+  enabled: false
+
+# Enable Network Policy for security
+networkPolicy:
+  enabled: true
+  allowedNamespaces:
+    - dx-dam
+  allowedPodLabels:
+    app: dx-dam
+
+# Production resources
+resources:
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+# Autoscaling for production load
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 20
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 75
+
+# Plugin configuration
+plugin:
+  name: "dam-vision-plugin"
+  displayName: "DAM Vision Plugin"
+  description: "Production image analysis plugin"
+  autoRegister: true
+
+# DAM configuration - Uses HAProxy for routing
+dam:
+  url: ""  # Leave empty to use HAProxy discovery
+
+# Service Discovery Configuration
+serviceDiscovery:
+  enabled: true
+  haproxyNamespace: "dx-haproxy"
+  haproxyServiceName: "dx-haproxy"
+  haproxyPort: "80"
+  damPath: "/dx/api/dam"
+
+# Environment variables
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: LOG_LEVEL
+    value: "info"
+  - name: PORT
+    value: "3000"
+  - name: HOST
+    value: "0.0.0.0"
+  - name: AUTO_REGISTER
+    value: "true"

@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "dam-plugin.fullname" . }}
+  labels:
+    {{- include "dam-plugin.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "dam-plugin.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+      labels:
+        {{- include "dam-plugin.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "dam-plugin.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+      - name: {{ .Chart.Name }}
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        ports:
+        - name: http
+          containerPort: {{ .Values.service.targetPort }}
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: {{ .Values.apiBasePath | default "" }}/health
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: {{ .Values.apiBasePath | default "" }}/health
+            port: http
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        env:
+        {{- range .Values.env }}
+        - name: {{ .name }}
+          value: {{ .value | quote }}
+        {{- end }}
+        {{- if .Values.apiBasePath }}
+        - name: API_BASE_PATH
+          value: {{ .Values.apiBasePath | quote }}
+        {{- end }}
+        - name: PLUGIN_NAME
+          value: {{ .Values.plugin.name | quote }}
+        - name: PLUGIN_URL
+          value: "http://{{ include "dam-plugin.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}"
+        - name: PLUGIN_NAMESPACE
+          value: {{ .Release.Namespace | quote }}
+        {{- if .Values.dam.url }}
+        - name: DAM_URL
+          value: {{ .Values.dam.url | quote }}
+        {{- end }}
+        {{- if .Values.serviceDiscovery.enabled }}
+        - name: HAPROXY_NAMESPACE
+          value: {{ .Values.serviceDiscovery.haproxyNamespace | quote }}
+        - name: HAPROXY_SERVICE_NAME
+          value: {{ .Values.serviceDiscovery.haproxyServiceName | quote }}
+        - name: HAPROXY_PORT
+          value: {{ .Values.serviceDiscovery.haproxyPort | quote }}
+        {{- if .Values.serviceDiscovery.haproxyUrl }}
+        - name: HAPROXY_URL
+          value: {{ .Values.serviceDiscovery.haproxyUrl | quote }}
+        {{- end }}
+        - name: DAM_PATH
+          value: {{ .Values.serviceDiscovery.damPath | quote }}
+        {{- end }}
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "dam-plugin.fullname" . }}
+              key: pluginApiKey
+        {{- if .Values.secrets.externalApiKey }}
+        - name: EXTERNAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: {{ include "dam-plugin.fullname" . }}
+              key: externalApiKey
+        {{- end }}
+        {{- if .Values.database.enabled }}
+        - name: DB_HOST
+          value: {{ .Values.database.host | quote }}
+        - name: DB_PORT
+          value: {{ .Values.database.port | quote }}
+        - name: DB_NAME
+          value: {{ .Values.database.name | quote }}
+        - name: DB_USER
+          value: {{ .Values.database.user | quote }}
+        - name: DB_PASSWORD
+          value: {{ .Values.database.password | quote }}
+        {{- end }}
+        resources:
+          {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

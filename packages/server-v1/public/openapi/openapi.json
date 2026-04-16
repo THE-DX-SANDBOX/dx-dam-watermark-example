@@ -1,0 +1,6090 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "DAM Plugin API",
+    "version": "1.0.0",
+    "description": "API for DAM Plugin Template",
+    "contact": {}
+  },
+  "paths": {
+    "/api/v1/info": {
+      "get": {
+        "x-controller-name": "PluginController",
+        "x-operation-name": "getInfo",
+        "tags": [
+          "PluginController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Plugin information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "PluginController.getInfo"
+      }
+    },
+    "/api/v1/process": {
+      "post": {
+        "x-controller-name": "PluginController",
+        "x-operation-name": "processAsset",
+        "tags": [
+          "PluginController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset processed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "result": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        },
+        "operationId": "PluginController.processAsset"
+      },
+      "options": {
+        "x-controller-name": "PluginController",
+        "x-operation-name": "processOptions",
+        "tags": [
+          "PluginController"
+        ],
+        "responses": {
+          "204": {
+            "description": "CORS preflight response"
+          }
+        },
+        "operationId": "PluginController.processOptions"
+      }
+    },
+    "/assets/by-type/{type}": {
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "findByType",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Assets by type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Asset"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "AssetController.findByType"
+      }
+    },
+    "/assets/count": {
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "count",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Asset.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Asset>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "AssetController.count"
+      }
+    },
+    "/assets/search": {
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "searchByTags",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Search assets by tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Asset"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "AssetController.searchByTags"
+      }
+    },
+    "/assets/stats": {
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "getStats",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset storage statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalAssets": {
+                      "type": "number"
+                    },
+                    "totalSize": {
+                      "type": "number"
+                    },
+                    "byType": {
+                      "type": "object"
+                    },
+                    "byProject": {
+                      "type": "object"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "AssetController.getStats"
+      }
+    },
+    "/assets/upload": {
+      "post": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "upload",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Upload asset file",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    },
+                    "storagePath": {
+                      "type": "string"
+                    },
+                    "fileName": {
+                      "type": "string"
+                    },
+                    "fileSize": {
+                      "type": "number"
+                    },
+                    "mimeType": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "projectId": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "AssetController.upload"
+      }
+    },
+    "/assets/{id}": {
+      "put": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Asset PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Asset"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "AssetController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Asset PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "AssetController.updateById"
+      },
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "findById",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssetWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Asset.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "AssetController.findById"
+      },
+      "delete": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Asset DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "AssetController.deleteById"
+      }
+    },
+    "/assets": {
+      "post": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "create",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Asset"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewAsset"
+              }
+            }
+          }
+        },
+        "operationId": "AssetController.create"
+      },
+      "patch": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Asset PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Asset.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Asset>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssetPartial"
+              }
+            }
+          }
+        },
+        "operationId": "AssetController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "AssetController",
+        "x-operation-name": "find",
+        "tags": [
+          "AssetController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of Asset model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AssetWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Asset.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "AssetController.find"
+      }
+    },
+    "/health": {
+      "get": {
+        "x-controller-name": "PluginController",
+        "x-operation-name": "health",
+        "tags": [
+          "PluginController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Health check response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "PluginController.health"
+      }
+    },
+    "/layers/count": {
+      "get": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "count",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Layer.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Layer>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "LayerController.count"
+      }
+    },
+    "/layers/reorder": {
+      "post": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "reorderLayers",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Layers reordered successfully"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "specId",
+                  "layerIds"
+                ],
+                "properties": {
+                  "specId": {
+                    "type": "string"
+                  },
+                  "layerIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "LayerController.reorderLayers"
+      }
+    },
+    "/layers/{id}/duplicate": {
+      "post": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "duplicate",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Duplicated layer",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Layer"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "offsetX": {
+                    "type": "number"
+                  },
+                  "offsetY": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "LayerController.duplicate"
+      }
+    },
+    "/layers/{id}/move": {
+      "patch": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "move",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Layer moved successfully"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "properties": {
+                  "x": {
+                    "type": "number"
+                  },
+                  "y": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "LayerController.move"
+      }
+    },
+    "/layers/{id}": {
+      "put": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Layer PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Layer"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "LayerController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Layer PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LayerPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "LayerController.updateById"
+      },
+      "get": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "findById",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LayerWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Layer.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "LayerController.findById"
+      },
+      "delete": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Layer DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "LayerController.deleteById"
+      }
+    },
+    "/layers": {
+      "post": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "create",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Layer"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewLayer"
+              }
+            }
+          }
+        },
+        "operationId": "LayerController.create"
+      },
+      "patch": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layer PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Layer.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Layer>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LayerPartial"
+              }
+            }
+          }
+        },
+        "operationId": "LayerController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "find",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of Layer model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/LayerWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Layer.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "LayerController.find"
+      }
+    },
+    "/projects/count": {
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "count",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Project.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Project>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.count"
+      }
+    },
+    "/projects/with-latest-spec": {
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "findWithLatestSpec",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Projects with their latest specification"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.findWithLatestSpec"
+      }
+    },
+    "/projects/{id}/assets": {
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "findAssets",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Array of Assets belonging to Project"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.findAssets"
+      }
+    },
+    "/projects/{id}/replace": {
+      "put": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "fullReplaceById",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Project full replace success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ProjectController.fullReplaceById"
+      }
+    },
+    "/projects/{id}/specifications": {
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "findSpecifications",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Array of Specifications belonging to Project"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.findSpecifications"
+      }
+    },
+    "/projects/{id}": {
+      "put": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Project PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Project"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ProjectController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Project PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "ProjectController.updateById"
+      },
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "findById",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProjectWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.findById"
+      },
+      "delete": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Project DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "ProjectController.deleteById"
+      }
+    },
+    "/projects": {
+      "post": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "create",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewProject"
+              }
+            }
+          }
+        },
+        "operationId": "ProjectController.create"
+      },
+      "patch": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Project.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Project>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProjectPartial"
+              }
+            }
+          }
+        },
+        "operationId": "ProjectController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "ProjectController",
+        "x-operation-name": "find",
+        "tags": [
+          "ProjectController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of Project model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ProjectWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Project.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "ProjectController.find"
+      }
+    },
+    "/rendered-images/check-cache": {
+      "get": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "checkCache",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Check if cached render exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "found": {
+                      "type": "boolean"
+                    },
+                    "image": {
+                      "$ref": "#/components/schemas/RenderedImage"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "specId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "width",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "height",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "RenderedImageController.checkCache"
+      }
+    },
+    "/rendered-images/cleanup": {
+      "post": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "cleanup",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Cleanup expired renders",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deleted": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "RenderedImageController.cleanup"
+      }
+    },
+    "/rendered-images/count": {
+      "get": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "count",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "RenderedImage model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "RenderedImage.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<RenderedImage>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "RenderedImageController.count"
+      }
+    },
+    "/rendered-images/stats": {
+      "get": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "getStats",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Rendering statistics",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalRenders": {
+                      "type": "number"
+                    },
+                    "avgRenderTime": {
+                      "type": "number"
+                    },
+                    "byFormat": {
+                      "type": "object"
+                    },
+                    "byStatus": {
+                      "type": "object"
+                    },
+                    "cacheHitRate": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "operationId": "RenderedImageController.getStats"
+      }
+    },
+    "/rendered-images/{id}": {
+      "put": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "RenderedImage PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenderedImage"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "RenderedImageController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "RenderedImage PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenderedImagePartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "RenderedImageController.updateById"
+      },
+      "get": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "findById",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "RenderedImage model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedImageWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedImage.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "RenderedImageController.findById"
+      },
+      "delete": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "RenderedImage DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "RenderedImageController.deleteById"
+      }
+    },
+    "/rendered-images": {
+      "post": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "create",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "RenderedImage model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedImage"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewRenderedImage"
+              }
+            }
+          }
+        },
+        "operationId": "RenderedImageController.create"
+      },
+      "patch": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "RenderedImage PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "RenderedImage.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<RenderedImage>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RenderedImagePartial"
+              }
+            }
+          }
+        },
+        "operationId": "RenderedImageController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "RenderedImageController",
+        "x-operation-name": "find",
+        "tags": [
+          "RenderedImageController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of RenderedImage model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RenderedImageWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RenderedImage.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "RenderedImageController.find"
+      }
+    },
+    "/specifications/active": {
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "findActive",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Active specifications with details"
+                }
+              }
+            }
+          }
+        },
+        "operationId": "SpecificationController.findActive"
+      }
+    },
+    "/specifications/count": {
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "count",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Specification model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Specification.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Specification>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "SpecificationController.count"
+      }
+    },
+    "/specifications/{id}/layers": {
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "findLayers",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Array of Layers belonging to Specification"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "SpecificationController.findLayers"
+      }
+    },
+    "/specifications/{specId}/layers": {
+      "get": {
+        "x-controller-name": "LayerController",
+        "x-operation-name": "findBySpecId",
+        "tags": [
+          "LayerController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Layers for specification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Layer"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "specId",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "LayerController.findBySpecId"
+      }
+    },
+    "/specifications/{id}/render": {
+      "post": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "render",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Render specification to image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "type": "string"
+                    },
+                    "filePath": {
+                      "type": "string"
+                    },
+                    "format": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    },
+                    "renderTimeMs": {
+                      "type": "number"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "png",
+                      "jpg",
+                      "webp",
+                      "svg"
+                    ]
+                  },
+                  "width": {
+                    "type": "number"
+                  },
+                  "height": {
+                    "type": "number"
+                  },
+                  "quality": {
+                    "type": "number"
+                  },
+                  "useCache": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "SpecificationController.render"
+      }
+    },
+    "/specifications/{id}/renders": {
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "getRenders",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Get all renders for a specification"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "SpecificationController.getRenders"
+      }
+    },
+    "/specifications/{id}/version": {
+      "post": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "createVersion",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Create new version of specification",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Specification"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecificationPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "SpecificationController.createVersion"
+      }
+    },
+    "/specifications/{id}": {
+      "put": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Specification PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Specification"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "SpecificationController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Specification PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecificationPartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "SpecificationController.updateById"
+      },
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "findById",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Specification model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SpecificationWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Specification.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "SpecificationController.findById"
+      },
+      "delete": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Specification DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "SpecificationController.deleteById"
+      }
+    },
+    "/specifications": {
+      "post": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "create",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Specification model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Specification"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewSpecification"
+              }
+            }
+          }
+        },
+        "operationId": "SpecificationController.create"
+      },
+      "patch": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Specification PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Specification.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Specification>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SpecificationPartial"
+              }
+            }
+          }
+        },
+        "operationId": "SpecificationController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "SpecificationController",
+        "x-operation-name": "find",
+        "tags": [
+          "SpecificationController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of Specification model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SpecificationWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Specification.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "SpecificationController.find"
+      }
+    },
+    "/templates/count": {
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "count",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Template model count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Template.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Template>"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "TemplateController.count"
+      }
+    },
+    "/templates/popular": {
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "getPopular",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Most popular templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Template"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "operationId": "TemplateController.getPopular"
+      }
+    },
+    "/templates/public": {
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "findPublic",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Public templates",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Template"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "TemplateController.findPublic"
+      }
+    },
+    "/templates/search": {
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "searchByTags",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Search templates by tags",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Template"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "tags",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "operationId": "TemplateController.searchByTags"
+      }
+    },
+    "/templates/{id}/use": {
+      "post": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "use",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Template use count incremented"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "TemplateController.use"
+      }
+    },
+    "/templates/{id}": {
+      "put": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "replaceById",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Template PUT success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Template"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "TemplateController.replaceById"
+      },
+      "patch": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "updateById",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Template PATCH success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatePartial"
+              }
+            }
+          },
+          "x-parameter-index": 1
+        },
+        "operationId": "TemplateController.updateById"
+      },
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "findById",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Template model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TemplateWithRelations"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template.Filter"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "TemplateController.findById"
+      },
+      "delete": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "deleteById",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "description": "Template DELETE success"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "operationId": "TemplateController.deleteById"
+      }
+    },
+    "/templates": {
+      "post": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "create",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Template model instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NewTemplate"
+              }
+            }
+          }
+        },
+        "operationId": "TemplateController.create"
+      },
+      "patch": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "updateAll",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Template PATCH success count",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/loopback.Count"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "where",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "title": "Template.WhereFilter",
+                  "additionalProperties": true,
+                  "x-typescript-type": "@loopback/repository#Where<Template>"
+                }
+              }
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TemplatePartial"
+              }
+            }
+          }
+        },
+        "operationId": "TemplateController.updateAll"
+      },
+      "get": {
+        "x-controller-name": "TemplateController",
+        "x-operation-name": "find",
+        "tags": [
+          "TemplateController"
+        ],
+        "responses": {
+          "200": {
+            "description": "Array of Template model instances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TemplateWithRelations"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Template.Filter1"
+                }
+              }
+            }
+          }
+        ],
+        "operationId": "TemplateController.find"
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "components": {
+    "schemas": {
+      "Template": {
+        "title": "Template",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "templateSpec": {
+            "type": "object"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "useCount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "templateSpec"
+        ],
+        "additionalProperties": true
+      },
+      "NewTemplate": {
+        "title": "NewTemplate",
+        "type": "object",
+        "description": "(tsType: Omit<Template, 'id'>, schemaOptions: { title: 'NewTemplate', exclude: [ 'id' ] })",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "templateSpec": {
+            "type": "object"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "useCount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "templateSpec"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<Template, 'id'>"
+      },
+      "TemplateWithRelations": {
+        "title": "TemplateWithRelations",
+        "type": "object",
+        "description": "(tsType: TemplateWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "templateSpec": {
+            "type": "object"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "useCount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "templateSpec"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "TemplateWithRelations"
+      },
+      "TemplatePartial": {
+        "title": "TemplatePartial",
+        "type": "object",
+        "description": "(tsType: Partial<Template>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "templateSpec": {
+            "type": "object"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "useCount": {
+            "type": "number"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<Template>"
+      },
+      "Specification": {
+        "title": "Specification",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "tilingEnabled": {
+            "type": "boolean"
+          },
+          "tilingPattern": {
+            "type": "string"
+          },
+          "tilingConfig": {
+            "type": "object"
+          },
+          "specData": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "width",
+          "height",
+          "specData"
+        ],
+        "additionalProperties": true
+      },
+      "NewSpecification": {
+        "title": "NewSpecification",
+        "type": "object",
+        "description": "(tsType: Omit<Specification, 'id'>, schemaOptions: { title: 'NewSpecification', exclude: [ 'id' ] })",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "tilingEnabled": {
+            "type": "boolean"
+          },
+          "tilingPattern": {
+            "type": "string"
+          },
+          "tilingConfig": {
+            "type": "object"
+          },
+          "specData": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "width",
+          "height",
+          "specData"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<Specification, 'id'>"
+      },
+      "AssetWithRelations": {
+        "title": "AssetWithRelations",
+        "type": "object",
+        "description": "(tsType: AssetWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "storagePath": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "storageProvider": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectWithRelations"
+          },
+          "foreignKey": {}
+        },
+        "required": [
+          "name",
+          "type",
+          "storagePath"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "AssetWithRelations"
+      },
+      "ProjectWithRelations": {
+        "title": "ProjectWithRelations",
+        "type": "object",
+        "description": "(tsType: ProjectWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "specifications": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SpecificationWithRelations"
+            }
+          },
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetWithRelations"
+            }
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "ProjectWithRelations"
+      },
+      "LayerWithRelations": {
+        "title": "LayerWithRelations",
+        "type": "object",
+        "description": "(tsType: LayerWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "scaleX": {
+            "type": "number"
+          },
+          "scaleY": {
+            "type": "number"
+          },
+          "layerData": {
+            "type": "object"
+          },
+          "blendMode": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "spec": {
+            "$ref": "#/components/schemas/SpecificationWithRelations"
+          },
+          "foreignKey": {}
+        },
+        "required": [
+          "name",
+          "type",
+          "zIndex",
+          "layerData"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "LayerWithRelations"
+      },
+      "RenderedImageWithRelations": {
+        "title": "RenderedImageWithRelations",
+        "type": "object",
+        "description": "(tsType: RenderedImageWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "renderTimeMs": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "spec": {
+            "$ref": "#/components/schemas/SpecificationWithRelations"
+          },
+          "foreignKey": {}
+        },
+        "required": [
+          "format",
+          "width",
+          "height",
+          "filePath"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "RenderedImageWithRelations"
+      },
+      "SpecificationWithRelations": {
+        "title": "SpecificationWithRelations",
+        "type": "object",
+        "description": "(tsType: SpecificationWithRelations, schemaOptions: { includeRelations: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "tilingEnabled": {
+            "type": "boolean"
+          },
+          "tilingPattern": {
+            "type": "string"
+          },
+          "tilingConfig": {
+            "type": "object"
+          },
+          "specData": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "project": {
+            "$ref": "#/components/schemas/ProjectWithRelations"
+          },
+          "foreignKey": {},
+          "layers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LayerWithRelations"
+            }
+          },
+          "renderedImages": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RenderedImageWithRelations"
+            }
+          }
+        },
+        "required": [
+          "name",
+          "width",
+          "height",
+          "specData"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "SpecificationWithRelations"
+      },
+      "SpecificationPartial": {
+        "title": "SpecificationPartial",
+        "type": "object",
+        "description": "(tsType: Partial<Specification>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "version": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "backgroundColor": {
+            "type": "string"
+          },
+          "tilingEnabled": {
+            "type": "boolean"
+          },
+          "tilingPattern": {
+            "type": "string"
+          },
+          "tilingConfig": {
+            "type": "object"
+          },
+          "specData": {
+            "type": "object"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<Specification>"
+      },
+      "RenderedImage": {
+        "title": "RenderedImage",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "renderTimeMs": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "format",
+          "width",
+          "height",
+          "filePath"
+        ],
+        "additionalProperties": true
+      },
+      "NewRenderedImage": {
+        "title": "NewRenderedImage",
+        "type": "object",
+        "description": "(tsType: Omit<RenderedImage, 'id'>, schemaOptions: { title: 'NewRenderedImage', exclude: [ 'id' ] })",
+        "properties": {
+          "specId": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "renderTimeMs": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "format",
+          "width",
+          "height",
+          "filePath"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<RenderedImage, 'id'>"
+      },
+      "RenderedImagePartial": {
+        "title": "RenderedImagePartial",
+        "type": "object",
+        "description": "(tsType: Partial<RenderedImage>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "format": {
+            "type": "string"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "quality": {
+            "type": "number"
+          },
+          "filePath": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "renderTimeMs": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<RenderedImage>"
+      },
+      "Project": {
+        "title": "Project",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": true
+      },
+      "NewProject": {
+        "title": "NewProject",
+        "type": "object",
+        "description": "(tsType: Omit<Project, 'id'>, schemaOptions: { title: 'NewProject', exclude: [ 'id' ] })",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<Project, 'id'>"
+      },
+      "ProjectPartial": {
+        "title": "ProjectPartial",
+        "type": "object",
+        "description": "(tsType: Partial<Project>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "thumbnailUrl": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<Project>"
+      },
+      "Layer": {
+        "title": "Layer",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "scaleX": {
+            "type": "number"
+          },
+          "scaleY": {
+            "type": "number"
+          },
+          "layerData": {
+            "type": "object"
+          },
+          "blendMode": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "zIndex",
+          "layerData"
+        ],
+        "additionalProperties": true
+      },
+      "NewLayer": {
+        "title": "NewLayer",
+        "type": "object",
+        "description": "(tsType: Omit<Layer, 'id'>, schemaOptions: { title: 'NewLayer', exclude: [ 'id' ] })",
+        "properties": {
+          "specId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "scaleX": {
+            "type": "number"
+          },
+          "scaleY": {
+            "type": "number"
+          },
+          "layerData": {
+            "type": "object"
+          },
+          "blendMode": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "zIndex",
+          "layerData"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<Layer, 'id'>"
+      },
+      "LayerPartial": {
+        "title": "LayerPartial",
+        "type": "object",
+        "description": "(tsType: Partial<Layer>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "specId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "zIndex": {
+            "type": "number"
+          },
+          "visible": {
+            "type": "boolean"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "opacity": {
+            "type": "number"
+          },
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "rotation": {
+            "type": "number"
+          },
+          "scaleX": {
+            "type": "number"
+          },
+          "scaleY": {
+            "type": "number"
+          },
+          "layerData": {
+            "type": "object"
+          },
+          "blendMode": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<Layer>"
+      },
+      "Asset": {
+        "title": "Asset",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "storagePath": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "storageProvider": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "storagePath"
+        ],
+        "additionalProperties": true
+      },
+      "NewAsset": {
+        "title": "NewAsset",
+        "type": "object",
+        "description": "(tsType: Omit<Asset, 'id'>, schemaOptions: { title: 'NewAsset', exclude: [ 'id' ] })",
+        "properties": {
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "storagePath": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "storageProvider": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "type",
+          "storagePath"
+        ],
+        "additionalProperties": true,
+        "x-typescript-type": "Omit<Asset, 'id'>"
+      },
+      "AssetPartial": {
+        "title": "AssetPartial",
+        "type": "object",
+        "description": "(tsType: Partial<Asset>, schemaOptions: { partial: true })",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          },
+          "mimeType": {
+            "type": "string"
+          },
+          "storagePath": {
+            "type": "string"
+          },
+          "fileUrl": {
+            "type": "string"
+          },
+          "fileName": {
+            "type": "string"
+          },
+          "storageProvider": {
+            "type": "string"
+          },
+          "fileSize": {
+            "type": "number"
+          },
+          "width": {
+            "type": "number"
+          },
+          "height": {
+            "type": "number"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "createdBy": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": true,
+        "x-typescript-type": "Partial<Asset>"
+      },
+      "loopback.Count": {
+        "type": "object",
+        "title": "loopback.Count",
+        "x-typescript-type": "@loopback/repository#Count",
+        "properties": {
+          "count": {
+            "type": "number"
+          }
+        }
+      },
+      "Asset.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "Asset.ScopeFilter"
+      },
+      "Asset.IncludeFilter.Items": {
+        "title": "Asset.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "project"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Asset.ScopeFilter"
+          }
+        }
+      },
+      "Asset.Filter": {
+        "type": "object",
+        "title": "Asset.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "projectId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "mimeType": {
+                    "type": "boolean"
+                  },
+                  "storagePath": {
+                    "type": "boolean"
+                  },
+                  "fileUrl": {
+                    "type": "boolean"
+                  },
+                  "fileName": {
+                    "type": "boolean"
+                  },
+                  "storageProvider": {
+                    "type": "boolean"
+                  },
+                  "fileSize": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "type": "boolean"
+                  },
+                  "tags": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Asset.Fields"
+          },
+          "include": {
+            "title": "Asset.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Asset.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Asset>"
+      },
+      "Asset.Filter1": {
+        "type": "object",
+        "title": "Asset.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "Asset.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "projectId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "mimeType": {
+                    "type": "boolean"
+                  },
+                  "storagePath": {
+                    "type": "boolean"
+                  },
+                  "fileUrl": {
+                    "type": "boolean"
+                  },
+                  "fileName": {
+                    "type": "boolean"
+                  },
+                  "storageProvider": {
+                    "type": "boolean"
+                  },
+                  "fileSize": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "type": "boolean"
+                  },
+                  "tags": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Asset.Fields"
+          },
+          "include": {
+            "title": "Asset.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Asset.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Asset>"
+      },
+      "Layer.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "Layer.ScopeFilter"
+      },
+      "Layer.IncludeFilter.Items": {
+        "title": "Layer.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "spec"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Layer.ScopeFilter"
+          }
+        }
+      },
+      "Layer.Filter": {
+        "type": "object",
+        "title": "Layer.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "specId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "zIndex": {
+                    "type": "boolean"
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "locked": {
+                    "type": "boolean"
+                  },
+                  "opacity": {
+                    "type": "boolean"
+                  },
+                  "x": {
+                    "type": "boolean"
+                  },
+                  "y": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "rotation": {
+                    "type": "boolean"
+                  },
+                  "scaleX": {
+                    "type": "boolean"
+                  },
+                  "scaleY": {
+                    "type": "boolean"
+                  },
+                  "layerData": {
+                    "type": "boolean"
+                  },
+                  "blendMode": {
+                    "type": "boolean"
+                  },
+                  "filters": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Layer.Fields"
+          },
+          "include": {
+            "title": "Layer.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Layer.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Layer>"
+      },
+      "Layer.Filter1": {
+        "type": "object",
+        "title": "Layer.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "Layer.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "specId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "type": {
+                    "type": "boolean"
+                  },
+                  "zIndex": {
+                    "type": "boolean"
+                  },
+                  "visible": {
+                    "type": "boolean"
+                  },
+                  "locked": {
+                    "type": "boolean"
+                  },
+                  "opacity": {
+                    "type": "boolean"
+                  },
+                  "x": {
+                    "type": "boolean"
+                  },
+                  "y": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "rotation": {
+                    "type": "boolean"
+                  },
+                  "scaleX": {
+                    "type": "boolean"
+                  },
+                  "scaleY": {
+                    "type": "boolean"
+                  },
+                  "layerData": {
+                    "type": "boolean"
+                  },
+                  "blendMode": {
+                    "type": "boolean"
+                  },
+                  "filters": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Layer.Fields"
+          },
+          "include": {
+            "title": "Layer.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Layer.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Layer>"
+      },
+      "Project.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "Project.ScopeFilter"
+      },
+      "Project.IncludeFilter.Items": {
+        "title": "Project.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "specifications",
+              "assets"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Project.ScopeFilter"
+          }
+        }
+      },
+      "Project.Filter": {
+        "type": "object",
+        "title": "Project.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "Project.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "boolean"
+                  },
+                  "thumbnailUrl": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Project.Fields"
+          },
+          "include": {
+            "title": "Project.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Project.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Project>"
+      },
+      "Project.Filter1": {
+        "type": "object",
+        "title": "Project.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "boolean"
+                  },
+                  "thumbnailUrl": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "boolean"
+                  },
+                  "metadata": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Project.Fields"
+          },
+          "include": {
+            "title": "Project.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Project.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Project>"
+      },
+      "RenderedImage.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "RenderedImage.ScopeFilter"
+      },
+      "RenderedImage.IncludeFilter.Items": {
+        "title": "RenderedImage.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "spec"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/RenderedImage.ScopeFilter"
+          }
+        }
+      },
+      "RenderedImage.Filter": {
+        "type": "object",
+        "title": "RenderedImage.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "specId": {
+                    "type": "boolean"
+                  },
+                  "format": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "quality": {
+                    "type": "boolean"
+                  },
+                  "filePath": {
+                    "type": "boolean"
+                  },
+                  "fileSize": {
+                    "type": "boolean"
+                  },
+                  "fileUrl": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "boolean"
+                  },
+                  "errorMessage": {
+                    "type": "boolean"
+                  },
+                  "renderTimeMs": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "expiresAt": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "RenderedImage.Fields"
+          },
+          "include": {
+            "title": "RenderedImage.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RenderedImage.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<RenderedImage>"
+      },
+      "RenderedImage.Filter1": {
+        "type": "object",
+        "title": "RenderedImage.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "RenderedImage.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "specId": {
+                    "type": "boolean"
+                  },
+                  "format": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "quality": {
+                    "type": "boolean"
+                  },
+                  "filePath": {
+                    "type": "boolean"
+                  },
+                  "fileSize": {
+                    "type": "boolean"
+                  },
+                  "fileUrl": {
+                    "type": "boolean"
+                  },
+                  "status": {
+                    "type": "boolean"
+                  },
+                  "errorMessage": {
+                    "type": "boolean"
+                  },
+                  "renderTimeMs": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "expiresAt": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "RenderedImage.Fields"
+          },
+          "include": {
+            "title": "RenderedImage.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/RenderedImage.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<RenderedImage>"
+      },
+      "Specification.ScopeFilter": {
+        "type": "object",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {},
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "uniqueItems": true
+              }
+            ]
+          },
+          "include": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": true
+            }
+          }
+        },
+        "additionalProperties": false,
+        "title": "Specification.ScopeFilter"
+      },
+      "Specification.IncludeFilter.Items": {
+        "title": "Specification.IncludeFilter.Items",
+        "type": "object",
+        "properties": {
+          "relation": {
+            "type": "string",
+            "enum": [
+              "project",
+              "layers",
+              "renderedImages"
+            ]
+          },
+          "scope": {
+            "$ref": "#/components/schemas/Specification.ScopeFilter"
+          }
+        }
+      },
+      "Specification.Filter": {
+        "type": "object",
+        "title": "Specification.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "projectId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "version": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "backgroundColor": {
+                    "type": "boolean"
+                  },
+                  "tilingEnabled": {
+                    "type": "boolean"
+                  },
+                  "tilingPattern": {
+                    "type": "boolean"
+                  },
+                  "tilingConfig": {
+                    "type": "boolean"
+                  },
+                  "specData": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Specification.Fields"
+          },
+          "include": {
+            "title": "Specification.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Specification.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Specification>"
+      },
+      "Specification.Filter1": {
+        "type": "object",
+        "title": "Specification.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "Specification.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "projectId": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "version": {
+                    "type": "boolean"
+                  },
+                  "width": {
+                    "type": "boolean"
+                  },
+                  "height": {
+                    "type": "boolean"
+                  },
+                  "backgroundColor": {
+                    "type": "boolean"
+                  },
+                  "tilingEnabled": {
+                    "type": "boolean"
+                  },
+                  "tilingPattern": {
+                    "type": "boolean"
+                  },
+                  "tilingConfig": {
+                    "type": "boolean"
+                  },
+                  "specData": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "updatedAt": {
+                    "type": "boolean"
+                  },
+                  "isActive": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Specification.Fields"
+          },
+          "include": {
+            "title": "Specification.IncludeFilter",
+            "type": "array",
+            "items": {
+              "anyOf": [
+                {
+                  "$ref": "#/components/schemas/Specification.IncludeFilter.Items"
+                },
+                {
+                  "type": "string"
+                }
+              ]
+            }
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Specification>"
+      },
+      "Template.Filter": {
+        "type": "object",
+        "title": "Template.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "boolean"
+                  },
+                  "category": {
+                    "type": "boolean"
+                  },
+                  "templateSpec": {
+                    "type": "boolean"
+                  },
+                  "thumbnailUrl": {
+                    "type": "boolean"
+                  },
+                  "useCount": {
+                    "type": "boolean"
+                  },
+                  "tags": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  },
+                  "isPublic": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Template.Fields"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Template>"
+      },
+      "Template.Filter1": {
+        "type": "object",
+        "title": "Template.Filter",
+        "properties": {
+          "offset": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "example": 100
+          },
+          "skip": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "order": {
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            ]
+          },
+          "where": {
+            "title": "Template.WhereFilter",
+            "type": "object",
+            "additionalProperties": true
+          },
+          "fields": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "boolean"
+                  },
+                  "name": {
+                    "type": "boolean"
+                  },
+                  "description": {
+                    "type": "boolean"
+                  },
+                  "category": {
+                    "type": "boolean"
+                  },
+                  "templateSpec": {
+                    "type": "boolean"
+                  },
+                  "thumbnailUrl": {
+                    "type": "boolean"
+                  },
+                  "useCount": {
+                    "type": "boolean"
+                  },
+                  "tags": {
+                    "type": "boolean"
+                  },
+                  "createdAt": {
+                    "type": "boolean"
+                  },
+                  "createdBy": {
+                    "type": "boolean"
+                  },
+                  "isPublic": {
+                    "type": "boolean"
+                  }
+                },
+                "additionalProperties": true
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "example": "id"
+                },
+                "uniqueItems": true
+              }
+            ],
+            "title": "Template.Fields"
+          }
+        },
+        "additionalProperties": false,
+        "x-typescript-type": "@loopback/repository#Filter<Template>"
+      }
+    }
+  }
+}

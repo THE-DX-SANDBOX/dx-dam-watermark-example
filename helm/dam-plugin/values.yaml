@@ -1,0 +1,162 @@
+# Default values for DAM Plugin
+
+replicaCount: 1
+
+image:
+  repository: registry.example.com/your-team/dam-plugin
+  pullPolicy: Always
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext:
+  runAsNonRoot: true
+  runAsUser: 1001
+  fsGroup: 1001
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false
+  allowPrivilegeEscalation: false
+
+# Service configuration
+service:
+  type: ClusterIP  # Use ClusterIP for internal cluster communication
+  port: 3000
+  targetPort: 3000
+  annotations: {}
+
+# API Base Path - used for ingress passthrough (no rewrite needed)
+# When set, the server will listen on this path prefix
+apiBasePath: ""
+
+# Ingress configuration (optional - disable for pure internal deployment)
+ingress:
+  enabled: false
+  className: "haproxy"
+  annotations: {}
+  # For passthrough mode, no rewrite annotations needed
+  # The server handles the path prefix via API_BASE_PATH
+  hosts:
+    - host: dam-plugin.example.com
+      paths:
+        - path: /dam-plugin
+          pathType: Prefix
+  tls: []
+
+# Resource configuration
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# Horizontal Pod Autoscaler
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+# Network Policy
+networkPolicy:
+  enabled: true
+  allowedNamespaces:
+    - dx-dam
+  allowedPodLabels:
+    app: dx-dam
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+# Plugin configuration
+plugin:
+  name: "dam-demo-plugin"
+  displayName: "DAM Demo Plugin"
+  description: "Plugin for processing DAM assets"
+  # API key for plugin authentication
+  apiKey: ""
+
+# DAM configuration
+dam:
+  # DAM service name and port for internal communication
+  serviceName: "digital-asset-management"
+  servicePort: 3000
+  # Namespace where DAM is deployed
+  namespace: "dx-dam"
+
+# Service Discovery Configuration
+serviceDiscovery:
+  # Enable dynamic HAProxy service discovery
+  # NOTE: Set to false if dx-haproxy namespace doesn't exist
+  enabled: false
+  # HAProxy configuration for discovery
+  haproxyNamespace: "dx-haproxy"
+  haproxyServiceName: "dx-haproxy"
+  haproxyPort: "80"
+  # Fallback URL if discovery fails
+  haproxyUrl: ""
+  # DAM path after HAProxy (e.g., /dx/api/dam)
+  damPath: "/dx/api/dam"
+
+# Environment variables
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: LOG_LEVEL
+    value: "info"
+  - name: PORT
+    value: "3000"
+  - name: HOST
+    value: "0.0.0.0"
+  - name: AUTO_REGISTER
+    value: "true"
+
+# Database configuration (PostgreSQL)
+database:
+  enabled: true
+  # Set this to the PostgreSQL service or endpoint used in your cluster.
+  host: "<postgres-service-name>"
+  port: "5432"
+  name: "dam_demo"
+  user: "postgres"
+  # Set the password via --set, a values override file, or a secret.
+  password: ""
+
+# External API configuration (customize per use case)
+externalApi:
+  # Google Vision API example
+  # apiUrl: "https://vision.googleapis.com"
+  # apiKey: ""  # Set via secret
+  
+  # AWS Rekognition example  
+  # awsRegion: "us-east-1"
+  # awsAccessKey: ""  # Set via secret
+  # awsSecretKey: ""  # Set via secret
+
+# Secrets
+secrets:
+  create: true
+  # Plugin API key (auto-generated if empty)
+  pluginApiKey: ""
+  # DAM admin token (required for auto-registration)
+  damAdminToken: ""
+  # External service credentials
+  externalApiKey: ""

@@ -1,0 +1,64 @@
+{{- if .Values.networkPolicy.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "dam-plugin.fullname" . }}
+  labels:
+    {{- include "dam-plugin.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      {{- include "dam-plugin.selectorLabels" . | nindent 6 }}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  # Allow traffic from DAM service
+  {{- range .Values.networkPolicy.allowedNamespaces }}
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ . }}
+    {{- if $.Values.networkPolicy.allowedPodLabels }}
+    - podSelector:
+        matchLabels:
+          {{- toYaml $.Values.networkPolicy.allowedPodLabels | nindent 10 }}
+    {{- end }}
+    ports:
+    - protocol: TCP
+      port: {{ $.Values.service.targetPort }}
+  {{- end }}
+  # Allow traffic within same namespace (for load balancing)
+  - from:
+    - podSelector:
+        matchLabels:
+          {{- include "dam-plugin.selectorLabels" . | nindent 10 }}
+    ports:
+    - protocol: TCP
+      port: {{ .Values.service.targetPort }}
+  egress:
+  # Allow DNS resolution
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: kube-system
+    ports:
+    - protocol: UDP
+      port: 53
+  # Allow outbound to DAM (for callbacks and registration)
+  {{- range .Values.networkPolicy.allowedNamespaces }}
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: {{ . }}
+    ports:
+    - protocol: TCP
+      port: 3000
+  {{- end }}
+  # Allow outbound to external APIs (port 443)
+  - to:
+    - namespaceSelector: {}
+    ports:
+    - protocol: TCP
+      port: 443
+{{- end }}

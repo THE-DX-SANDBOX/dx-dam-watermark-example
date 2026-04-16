@@ -1,0 +1,70 @@
+# Dependencies
+node_modules/
+package-lock.json
+npm-debug.log*
+lerna-debug.log*
+
+# Build output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment - actual config files with real credentials
+.env
+.env.local
+.env.dev
+.env.uat
+.env.prod
+.env.*.local
+*.pid
+
+# Security - Keep templates only, exclude actual secrets
+secrets/
+credentials/
+*.key
+*.pem
+*.crt
+kubeconfig
+.kube/
+plugin-auth.json
+api-keys.json
+
+# Note: .env.*.example files ARE tracked for template reference
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Logs
+logs/
+*.log
+dam-logs.json
+
+# Generated local rendition snapshots and patch payloads
+config/renditions/*.json
+
+# Docker
+.dockerignore
+
+# OpenAPI generated files
+openapi/specs/
+
+# Temporary files
+tmp/
+temp/
+
+# AI Context - KEEP TRACKED
+# The .ai/ directory contains important context for AI assistants
+# !.ai/
+# !.ai-instructions.md

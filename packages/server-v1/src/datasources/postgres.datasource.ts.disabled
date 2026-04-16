@@ -1,0 +1,60 @@
+import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
+import {juggler} from '@loopback/repository';
+
+/**
+ * PostgreSQL datasource configuration
+ * 
+ * This datasource automatically adapts to your environment:
+ * 
+ * For local development with port-forward:
+ *   DB_HOST=localhost
+ *   DB_PORT=5432
+ *   (Use ./scripts/port-forward-db.sh to establish connection)
+ * 
+ * For in-cluster deployment:
+ *   DB_HOST={namespace}-postgresql.svc.cluster.local
+ *   DB_PORT=5432
+ *   (Kubernetes DNS resolves to PostgreSQL service)
+ * 
+ * Connection pooling is automatically configured based on environment variables.
+ */
+const config = {
+  name: 'postgres',
+  connector: 'postgresql',
+  
+  // Connection settings (from environment)
+  host: process.env.DB_HOST || 'localhost',
+  port: process.env.DB_PORT ? parseInt(process.env.DB_PORT) : 5432,
+  user: process.env.DB_USER || 'postgres',
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || 'damdb',
+  
+  // SSL configuration
+  ssl: process.env.DB_SSL === 'true' ? {
+    rejectUnauthorized: process.env.DB_SSL_REJECT_UNAUTHORIZED !== 'false',
+  } : false,
+  
+  // Connection pool settings
+  min: parseInt(process.env.DB_POOL_MIN || '2'),
+  max: parseInt(process.env.DB_POOL_MAX || '10'),
+  idleTimeoutMillis: parseInt(process.env.DB_POOL_IDLE_TIMEOUT || '10000'),
+  
+  // Connection timeout
+  connectionTimeout: parseInt(process.env.DB_CONNECTION_TIMEOUT || '30000'),
+  
+  // Debugging (set DEBUG=loopback:datasource:postgres in .env)
+  debug: process.env.DEBUG?.includes('datasource'),
+};
+
+@lifeCycleObserver('datasource')
+export class PostgresDataSource extends juggler.DataSource implements LifeCycleObserver {
+  static dataSourceName = 'postgres';
+  static readonly defaultConfig = config;
+
+  constructor(
+    @inject('datasources.config.postgres', {optional: true})
+    dsConfig: object = config,
+  ) {
+    super(dsConfig);
+  }
+}

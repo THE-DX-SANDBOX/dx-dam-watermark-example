@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  dam-plugin:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dam-plugin
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - HOST=0.0.0.0
+      - NODE_ENV=development
+      - LOG_LEVEL=debug
+      - API_KEY=${API_KEY:-change-me}
+      # Add your custom environment variables here
+      # - EXTERNAL_API_KEY=your-key
+      # - EXTERNAL_API_URL=https://api.example.com
+    volumes:
+      # Mount for development hot reload (optional)
+      - ./server-v1/src:/opt/app/server-v1/src:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - dam-network
+
+networks:
+  dam-network:
+    driver: bridge

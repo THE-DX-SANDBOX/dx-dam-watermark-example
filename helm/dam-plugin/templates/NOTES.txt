@@ -1,0 +1,83 @@
+🎉 DAM Plugin has been deployed successfully!
+
+Plugin Name: {{ .Values.plugin.name }}
+Release: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+
+📋 PLUGIN STATUS:
+
+Get the plugin pods:
+  kubectl get pods -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "dam-plugin.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+
+Check plugin logs:
+  kubectl logs -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "dam-plugin.name" . }}" --tail=50
+
+🔗 ACCESS PLUGIN:
+
+{{- if .Values.ingress.enabled }}
+External URL (via Ingress):
+{{- range $host := .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}{{ (index $host.paths 0).path }}
+{{- end }}
+{{- end }}
+
+Internal URL (within cluster):
+  http://{{ include "dam-plugin.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+
+Port forward for local testing:
+  kubectl port-forward -n {{ .Release.Namespace }} svc/{{ include "dam-plugin.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }}
+  curl http://localhost:{{ .Values.service.port }}/health
+
+🔧 REGISTRATION:
+
+⚠️  Manual registration required
+   Plugin must be registered with DAM by updating the DAM ConfigMap.
+   
+   Use the deployment script which handles both plugin deployment and DAM registration:
+   ./scripts/deploy-dam-plugin.sh -n {{ .Release.Namespace }}
+   
+   Or manually update the DAM ConfigMap at:
+   kubectl edit configmap {{ .Release.Namespace }}-digital-asset-management -n {{ .Release.Namespace }}
+
+Plugin Configuration:
+  Plugin URL: http://{{ include "dam-plugin.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local:{{ .Values.service.port }}
+  Callback Host: http://{{ .Release.Namespace }}-{{ .Values.dam.serviceName }}:{{ .Values.dam.servicePort }}
+
+📊 MONITORING:
+
+View metrics:
+  kubectl top pods -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "dam-plugin.name" . }}"
+
+{{- if .Values.autoscaling.enabled }}
+View autoscaling status:
+  kubectl get hpa -n {{ .Release.Namespace }} {{ include "dam-plugin.fullname" . }}
+{{- end }}
+
+🔐 SECURITY:
+
+{{- if .Values.networkPolicy.enabled }}
+✅ Network Policy is enabled
+   Only pods in these namespaces can access the plugin:
+   {{- range .Values.networkPolicy.allowedNamespaces }}
+   - {{ . }}
+   {{- end }}
+{{- else }}
+⚠️  Network Policy is disabled
+{{- end }}
+
+📖 NEXT STEPS:
+
+1. Verify plugin is healthy:
+   curl http://localhost:{{ .Values.service.port }}/health
+   (after port-forward)
+
+2. Get plugin info:
+   curl http://localhost:{{ .Values.service.port }}/api/v1/info
+
+3. Upload an image to DX DAM and verify it gets processed
+
+4. View processing logs:
+   kubectl logs -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "dam-plugin.name" . }}" -f
+
+💡 For more information, see the documentation at:
+   https://github.com/your-org/DAM-Demo
