@@ -45,7 +45,7 @@ Required information:
 - **Plugin Name**: Unique identifier
 - **Plugin Display Name**: User-friendly name
 - **Plugin Version**: Semantic version
-- **Plugin URL**: Base URL (e.g., `http://plugin.example.com`)
+- **Plugin URL**: Base URL (e.g., `https://<plugin-hostname>`)
 - **API Version**: API version (e.g., `v1`)
 - **API Key**: Authentication key
 - **Supported File Types**: MIME types
@@ -80,7 +80,7 @@ Status: Enabled
 
 **API Configuration:**
 ```
-Base URL: http://plugin.example.com
+Base URL: <plugin-base-url>
 API Version: v1
 Health Check Path: /health
 Info Endpoint: /api/v1/info
@@ -91,7 +91,7 @@ Process Endpoint: /api/v1/process
 ```
 Authentication Type: API Key
 Header Name: X-API-Key
-API Key: [your-secure-api-key]
+API Key: <api-key>
 ```
 
 **File Configuration:**
@@ -120,17 +120,17 @@ Retry Delay (seconds): 5
 Register plugin via API:
 
 ```bash
-curl -X POST https://your-dam-instance.com/api/admin/plugins \
+curl -X POST https://<dam-hostname>/api/admin/plugins \
   -H "Authorization: Bearer ${DAM_ADMIN_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
-    "name": "my-vision-plugin",
-    "displayName": "My Vision Plugin",
-    "description": "Custom vision analysis for digital assets",
+    "name": "<plugin-name>",
+    "displayName": "<plugin-display-name>",
+    "description": "<plugin-description>",
     "version": "1.0.0",
     "enabled": true,
     "apiConfig": {
-      "baseUrl": "http://plugin.example.com",
+      "baseUrl": "<plugin-base-url>",
       "apiVersion": "v1",
       "healthCheckPath": "/health",
       "infoEndpoint": "/api/v1/info",
@@ -139,7 +139,7 @@ curl -X POST https://your-dam-instance.com/api/admin/plugins \
     "authentication": {
       "type": "apiKey",
       "headerName": "X-API-Key",
-      "apiKey": "your-secure-api-key"
+      "apiKey": "<api-key>"
     },
     "fileConfig": {
       "supportedMimeTypes": [
@@ -168,13 +168,13 @@ Create `dam-plugin-registration.json`:
 ```json
 {
   "plugin": {
-    "name": "my-vision-plugin",
-    "displayName": "My Vision Plugin",
-    "description": "Custom vision analysis for digital assets",
+    "name": "<plugin-name>",
+    "displayName": "<plugin-display-name>",
+    "description": "<plugin-description>",
     "version": "1.0.0",
     "enabled": true,
     "apiConfig": {
-      "baseUrl": "http://plugin.example.com",
+      "baseUrl": "https://<plugin-hostname>",
       "apiVersion": "v1",
       "endpoints": {
         "health": "/health",
@@ -501,7 +501,7 @@ curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
   -d '{
     "version": "1.1.0",
     "apiConfig": {
-      "baseUrl": "http://plugin.example.com"
+      "baseUrl": "https://<plugin-hostname>"
     }
   }'
 ```
@@ -512,7 +512,7 @@ curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
 npm run test:integration
 
 # Test with DAM
-curl -X POST https://your-dam-instance.com/api/admin/plugins/my-vision-plugin/test
+curl -X POST https://<dam-hostname>/api/admin/plugins/<plugin-name>/test
 ```
 
 ### Rolling Back
@@ -524,7 +524,7 @@ If issues occur:
 kubectl rollout undo deployment/dam-plugin -n dam-plugins
 
 # Revert DAM registration
-curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
+curl -X PATCH https://<dam-hostname>/api/admin/plugins/<plugin-name> \
   -H "Authorization: Bearer ${DAM_ADMIN_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{"version": "1.0.0"}'
@@ -539,12 +539,12 @@ curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
 **Check registration:**
 ```bash
 curl -H "Authorization: Bearer ${DAM_ADMIN_TOKEN}" \
-  https://your-dam-instance.com/api/admin/plugins
+  https://<dam-hostname>/api/admin/plugins
 ```
 
 **Verify plugin is enabled:**
 ```bash
-curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
+curl -X PATCH https://<dam-hostname>/api/admin/plugins/<plugin-name> \
   -H "Authorization: Bearer ${DAM_ADMIN_TOKEN}" \
   -d '{"enabled": true}'
 ```
@@ -554,8 +554,8 @@ curl -X PATCH https://your-dam-instance.com/api/admin/plugins/my-vision-plugin \
 **Verify API key:**
 ```bash
 # Test authentication
-curl -X GET http://plugin.example.com/api/v1/info \
-  -H "X-API-Key: your-api-key"
+curl -X GET https://<plugin-hostname>/api/v1/info \
+  -H "X-API-Key: <api-key>"
 ```
 
 **Check DAM configuration:**

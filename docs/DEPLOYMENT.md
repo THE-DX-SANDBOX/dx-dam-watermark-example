@@ -59,7 +59,7 @@ docker build -t dam-plugin:latest ./packages
 docker run -d \
   --name dam-plugin \
   -p 3000:3000 \
-  -e API_KEY=your-secure-api-key \
+  -e API_KEY=<api-key> \
   -e LOG_LEVEL=info \
   dam-plugin:latest
 ```
@@ -149,7 +149,7 @@ chmod +x scripts/init-plugin.sh
 # Build and push image
 export DOCKER_REGISTRY=your-registry.com
 ./scripts/build.sh
-docker push your-registry.com/dam-plugin:latest
+docker push <registry-host>/dam-plugin:latest
 
 # Deploy to Kubernetes
 chmod +x scripts/deploy.sh
@@ -161,7 +161,7 @@ chmod +x scripts/deploy.sh
 1. **Create secrets:**
 ```bash
 kubectl create secret generic dam-plugin-secrets \
-  --from-literal=API_KEY=your-secure-api-key \
+  --from-literal=API_KEY=<api-key> \
   -n dam-plugins
 ```
 
@@ -243,8 +243,8 @@ kubectl create secret generic dam-plugin-secrets \
 
 # Create from literal
 kubectl create secret generic dam-plugin-secrets \
-  --from-literal=API_KEY=your-key \
-  --from-literal=EXTERNAL_API_KEY=external-key \
+  --from-literal=API_KEY=<api-key> \
+  --from-literal=EXTERNAL_API_KEY=<external-api-key> \
   -n dam-plugins
 ```
 
@@ -489,9 +489,9 @@ kubectl get secrets -n dam-plugins
 
 # Create image pull secret
 kubectl create secret docker-registry regcred \
-  --docker-server=your-registry.com \
-  --docker-username=your-username \
-  --docker-password=your-password \
+  --docker-server=<registry-host> \
+  --docker-username=<registry-username> \
+  --docker-password=<registry-password> \
   -n dam-plugins
 
 # Add to deployment

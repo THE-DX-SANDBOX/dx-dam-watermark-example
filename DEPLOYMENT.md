@@ -65,10 +65,10 @@ helm install dam-plugin ./helm/dam-plugin \
     --create-namespace \
     --set image.repository=your-registry/dam-plugin \
     --set image.tag=latest \
-    --set dam.url="https://dam-dev.example.com" \
-    --set dam.adminToken="your-admin-token" \
+    --set dam.url="https://<dam-dev-hostname>" \
+    --set dam.adminToken="<dam-admin-token>" \
     --set ingress.enabled=true \
-    --set ingress.hosts[0].host="plugin-dev.example.com"
+    --set ingress.hosts[0].host="<plugin-public-hostname>"
 ```
 
 ## Configuration

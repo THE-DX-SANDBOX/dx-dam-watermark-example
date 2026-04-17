@@ -235,8 +235,8 @@ MAX_FILE_SIZE=10485760                     # 10MB default
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=postgres
-DB_PASSWORD=<your-password>
-DB_NAME=damdb
+DB_PASSWORD=<database-password>
+DB_NAME=<database-name>
 ```
 
 ## API Endpoints Summary

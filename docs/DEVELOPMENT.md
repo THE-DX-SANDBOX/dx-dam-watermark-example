@@ -522,11 +522,11 @@ NODE_ENV=development
 LOG_LEVEL=debug
 
 # Security
-API_KEY=dev-api-key-change-in-production
+API_KEY=<dev-api-key>
 
 # External Services
 EXTERNAL_API_URL=https://api.example.com/v1
-EXTERNAL_API_KEY=your-dev-api-key
+EXTERNAL_API_KEY=<dev-external-api-key>
 
 # File Upload
 MAX_FILE_SIZE=104857600  # 100MB in bytes

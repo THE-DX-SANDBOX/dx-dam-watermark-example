@@ -209,13 +209,13 @@ DAM-Demo/
 
 ### .env Example
 ```bash
-PROJECT_NAME=my-project
-NAMESPACE=my-namespace
-RELEASE_NAME=my-release
+PROJECT_NAME=<project-name>
+NAMESPACE=<namespace>
+RELEASE_NAME=<release-name>
 DOCKER_REGISTRY=<registry-host>/<repository>
-IMAGE_NAME=my-image
+IMAGE_NAME=<image-name>
 IMAGE_TAG=latest
-DX_HOSTNAME=my-dx-host.com
+DX_HOSTNAME=<dx-hostname>
 DX_USERNAME=<dx-username>
 DX_PASSWORD=****
 ...
@@ -224,8 +224,8 @@ DX_PASSWORD=****
 ### .template-config.json Example
 ```json
 {
-  "projectName": "my-project",
-  "projectDisplayName": "My Project",
+   "projectName": "<project-name>",
+   "projectDisplayName": "<project-display-name>",
   "projectType": "Full Stack",
   "generatedAt": "2026-02-02T17:30:00Z",
   "components": {

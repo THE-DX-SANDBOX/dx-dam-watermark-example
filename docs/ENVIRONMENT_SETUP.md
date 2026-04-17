@@ -110,11 +110,11 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=dam_plugin_local
 DB_USER=postgres
-DB_PASSWORD=local_dev_password
+DB_PASSWORD=<local-db-password>
 
 # Development API keys (not for production!)
-API_KEY=dev-api-key-12345
-JWT_SECRET=local-jwt-secret-for-development-only-min-32-chars
+API_KEY=<local-api-key>
+JWT_SECRET=<local-jwt-secret-min-32-chars>
 
 # HCL DX DAM (local DX instance)
 DAM_HOST=http://localhost:10039
@@ -157,15 +157,15 @@ DEBUG=plugin:*
 # Local database
 DB_HOST=localhost
 DB_PORT=5432
-DB_PASSWORD=local_dev_only
+DB_PASSWORD=<local-db-password>
 
 # Development API keys
-API_KEY=local-dev-key
-JWT_SECRET=local-jwt-secret-at-least-32-characters-long
+API_KEY=<local-api-key>
+JWT_SECRET=<local-jwt-secret-min-32-chars>
 
 # Local DX instance
 DAM_HOST=http://localhost:10039
-DAM_API_KEY=local-dam-api-key
+DAM_API_KEY=<local-dam-api-key>
 ```
 
 **Running locally:**
@@ -207,18 +207,18 @@ DB_PORT=5432
 DB_NAME=dam_plugin_dev
 
 # TODO: Move these to Kubernetes secrets
-DB_USER=plugin_user
-DB_PASSWORD=CHANGE_ME_TO_K8S_SECRET
+DB_USER=<db-username>
+DB_PASSWORD=<db-password-from-k8s-secret>
 
 # API keys - SHOULD be in Kubernetes secrets
-API_KEY=dev-cluster-api-key
-JWT_SECRET=dev-jwt-secret-min-32-chars
+API_KEY=<api-key>
+JWT_SECRET=<jwt-secret-min-32-chars>
 
 # HCL DX Dev Cluster
-DAM_HOST=https://dx-dev.your-company.com
-DAM_API_KEY=dev-dam-api-key
+DAM_HOST=https://<dx-dev-hostname>
+DAM_API_KEY=<dam-api-key>
 
-CORS_ORIGIN=https://dx-dev.your-company.com,http://localhost:3000
+CORS_ORIGIN=https://<dx-dev-hostname>,http://localhost:3000
 ```
 
 **Deploying to dev:**
@@ -268,9 +268,9 @@ DB_NAME=dam_plugin_uat
 # DAM_API_KEY: from secret 'dam-plugin-api' key 'DAM_API_KEY'
 
 # HCL DX UAT
-DAM_HOST=https://dx-uat.your-company.com
+DAM_HOST=https://<dx-uat-hostname>
 
-CORS_ORIGIN=https://dx-uat.your-company.com
+CORS_ORIGIN=https://<dx-uat-hostname>
 RATE_LIMIT_MAX=100
 RATE_LIMIT_WINDOW=15m
 ```
@@ -279,15 +279,15 @@ RATE_LIMIT_WINDOW=15m
 ```bash
 # Database credentials
 kubectl create secret generic dam-plugin-db \
-  --from-literal=DB_USER=plugin_user_uat \
-  --from-literal=DB_PASSWORD='uat-secure-password' \
+   --from-literal=DB_USER=<db-username> \
+   --from-literal=DB_PASSWORD='<db-password>' \
    -n <Namespace>
 
 # API credentials
 kubectl create secret generic dam-plugin-api \
-  --from-literal=API_KEY='uat-api-key' \
-  --from-literal=JWT_SECRET='uat-jwt-secret-min-32-chars' \
-  --from-literal=DAM_API_KEY='uat-dam-api-key' \
+   --from-literal=API_KEY='<api-key>' \
+   --from-literal=JWT_SECRET='<jwt-secret-min-32-chars>' \
+   --from-literal=DAM_API_KEY='<dam-api-key>' \
    -n <Namespace>
 ```
 
@@ -331,10 +331,10 @@ DB_POOL_MAX=20
 # Reference secrets in Helm values.yaml or deployment manifests
 
 # HCL DX Production
-DAM_HOST=https://dx.your-company.com
+DAM_HOST=https://<dx-hostname>
 
 # Security settings
-CORS_ORIGIN=https://dx.your-company.com
+CORS_ORIGIN=https://<dx-hostname>
 RATE_LIMIT_MAX=50
 RATE_LIMIT_WINDOW=15m
 
@@ -348,14 +348,14 @@ HEALTH_CHECK_PATH=/health
 ```bash
 # Create production secrets (do this manually, not in CI/CD)
 kubectl create secret generic dam-plugin-db-prod \
-  --from-literal=DB_USER=plugin_user_prod \
-  --from-literal=DB_PASSWORD='STRONG_RANDOM_PASSWORD_HERE' \
+   --from-literal=DB_USER=<db-username> \
+   --from-literal=DB_PASSWORD='<strong-random-db-password>' \
    -n <Namespace>
 
 kubectl create secret generic dam-plugin-api-prod \
-  --from-literal=API_KEY='PRODUCTION_API_KEY' \
-  --from-literal=JWT_SECRET='PRODUCTION_JWT_SECRET_MIN_32_CHARS' \
-  --from-literal=DAM_API_KEY='PRODUCTION_DAM_API_KEY' \
+   --from-literal=API_KEY='<production-api-key>' \
+   --from-literal=JWT_SECRET='<production-jwt-secret-min-32-chars>' \
+   --from-literal=DAM_API_KEY='<production-dam-api-key>' \
    -n <Namespace>
 
 # Verify secrets exist
@@ -388,26 +388,26 @@ For UAT and Production environments, using Kubernetes secrets provides:
 kubectl create secret generic dam-plugin-db \
    --from-literal=DB_HOST=<DbHost> \
   --from-literal=DB_PORT=5432 \
-  --from-literal=DB_NAME=dam_plugin \
-  --from-literal=DB_USER=plugin_user \
-  --from-literal=DB_PASSWORD='your-secure-password' \
+   --from-literal=DB_NAME=<db-name> \
+   --from-literal=DB_USER=<db-username> \
+   --from-literal=DB_PASSWORD='<db-password>' \
    -n <Namespace>
 ```
 
 **API keys:**
 ```bash
 kubectl create secret generic dam-plugin-api \
-  --from-literal=API_KEY='your-api-key' \
-  --from-literal=JWT_SECRET='your-jwt-secret-min-32-chars' \
-  --from-literal=DAM_API_KEY='your-dam-api-key' \
+   --from-literal=API_KEY='<api-key>' \
+   --from-literal=JWT_SECRET='<jwt-secret-min-32-chars>' \
+   --from-literal=DAM_API_KEY='<dam-api-key>' \
    -n <Namespace>
 ```
 
 **External services:**
 ```bash
 kubectl create secret generic dam-plugin-external \
-  --from-literal=EXTERNAL_API_KEY='external-api-key' \
-  --from-literal=REDIS_PASSWORD='redis-password' \
+   --from-literal=EXTERNAL_API_KEY='<external-api-key>' \
+   --from-literal=REDIS_PASSWORD='<redis-password>' \
    -n <Namespace>
 ```
 
@@ -672,7 +672,7 @@ source scripts/load-env.sh prod
 echo $CORS_ORIGIN  # Should match your DX server URL
 
 # For production, must be specific:
-CORS_ORIGIN=https://dx.your-company.com  # ✅ Correct
+CORS_ORIGIN=https://<dx-hostname>  # ✅ Correct
 CORS_ORIGIN=*  # ❌ Not allowed in production
 
 # Restart service after changing CORS
@@ -734,7 +734,7 @@ If you're moving credentials from environment files to secrets:
 2. **Create Kubernetes secrets:**
    ```bash
    kubectl create secret generic dam-plugin-db \
-     --from-literal=DB_PASSWORD='your-password' \
+       --from-literal=DB_PASSWORD='<db-password>' \
    -n <Namespace>
    ```
 

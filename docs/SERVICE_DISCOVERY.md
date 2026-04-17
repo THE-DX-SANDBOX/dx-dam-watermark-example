@@ -144,7 +144,7 @@ helm install dam-plugin ./helm/dam-plugin \
 helm install dam-plugin ./helm/dam-plugin \
     --namespace dam-plugins-dev \
     --set serviceDiscovery.enabled=false \
-    --set dam.url="https://dam-dev.example.com/api"
+  --set dam.url="https://<dam-dev-hostname>/api"
 ```
 
 ### Custom HAProxy Configuration

@@ -117,21 +117,21 @@ source scripts/load-env.sh prod
 ```bash
 # Database
 kubectl create secret generic dam-plugin-db \
-  --from-literal=DB_USER=plugin_user \
-  --from-literal=DB_PASSWORD='secure-password' \
+  --from-literal=DB_USER=<db-username> \
+  --from-literal=DB_PASSWORD='<db-password>' \
   -n <Namespace>
 
 # API Keys
 kubectl create secret generic dam-plugin-api \
-  --from-literal=API_KEY='api-key' \
-  --from-literal=JWT_SECRET='jwt-secret-min-32-chars' \
-  --from-literal=DAM_API_KEY='dam-api-key' \
+  --from-literal=API_KEY='<api-key>' \
+  --from-literal=JWT_SECRET='<jwt-secret-min-32-chars>' \
+  --from-literal=DAM_API_KEY='<dam-api-key>' \
   -n <Namespace>
 
 # External Services
 kubectl create secret generic dam-plugin-external \
-  --from-literal=EXTERNAL_API_KEY='external-key' \
-  --from-literal=REDIS_PASSWORD='redis-pass' \
+  --from-literal=EXTERNAL_API_KEY='<external-api-key>' \
+  --from-literal=REDIS_PASSWORD='<redis-password>' \
   -n <Namespace>
 ```
 
@@ -153,7 +153,7 @@ kubectl get secret <ApiSecretName> -n <Namespace> \
 
 # Update secret
 kubectl create secret generic dam-plugin-api \
-  --from-literal=API_KEY='new-key' \
+  --from-literal=API_KEY='<new-api-key>' \
   --dry-run=client -o yaml | kubectl apply -f -
 
 # Restart pods to use new secret
@@ -210,7 +210,7 @@ source scripts/load-env.sh prod
 echo $CORS_ORIGIN
 
 # Must match DX server URL exactly
-CORS_ORIGIN=https://dx.your-company.com  # ✅
+CORS_ORIGIN=https://<dx-hostname>  # ✅
 CORS_ORIGIN=*                            # ❌ Not for production
 
 # Restart after changing
@@ -261,10 +261,10 @@ kubectl logs -f deployment/<PluginDeploymentName> -n <Namespace>
 curl http://localhost:3000/health
 
 # Development cluster
-curl https://dx-dev.your-company.com/api/dam-plugin/health
+curl https://<dx-dev-hostname>/api/dam-plugin/health
 
 # Production
-curl https://dx.your-company.com/api/dam-plugin/health
+curl https://<dx-hostname>/api/dam-plugin/health
 ```
 
 ## 📚 Related Documentation

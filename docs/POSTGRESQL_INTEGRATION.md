@@ -31,18 +31,18 @@ When you run `./scripts/init-template.sh`, Step 7 will prompt for PostgreSQL con
 Configure PostgreSQL database? [Y/n]: y
 
 PostgreSQL Connection Details:
-  PostgreSQL Host [my-namespace-dx-postgres]: 
+  PostgreSQL Host [<postgres-service-name>]: 
   PostgreSQL Port [5432]: 
-  Database Name [my_project]: 
-  Database User [my_project]: 
-  Database Password [changeme]: ********
+  Database Name [<database-name>]: 
+  Database User [<database-username>]: 
+  Database Password [<database-password>]: ********
   Use SSL/TLS for database connection? [Y/n]: y
   Max Connections (pool size) [10]: 
 
 Test database connection? [Y/n]: y
 Testing PostgreSQL connection...
   ✓ PostgreSQL server is reachable
-  ⚠ Database 'my_project' does not exist yet
+  ⚠ Database '<database-name>' does not exist yet
 
 Would you like guidance on creating the database? [Y/n]: y
 ```
@@ -70,16 +70,16 @@ The wizard adds these variables to your `.env` file:
 
 ```bash
 # PostgreSQL Database Configuration
-DB_HOST=my-namespace-dx-postgres
+DB_HOST=<postgres-service-name>
 DB_PORT=5432
-DB_NAME=my_project
-DB_USER=my_project
-DB_PASSWORD=changeme
+DB_NAME=<database-name>
+DB_USER=<database-username>
+DB_PASSWORD=<database-password>
 DB_SSL=true
 DB_MAX_CONNECTIONS=10
 
 # PostgreSQL Connection URL (for LoopBack, Prisma, TypeORM, etc.)
-DATABASE_URL=postgresql://my_project:changeme@my-namespace-dx-postgres:5432/my_project?sslmode=require
+DATABASE_URL=postgresql://<database-username>:<database-password>@<postgres-service-name>:5432/<database-name>?sslmode=require
 
 # Connection Pool Settings
 DB_POOL_MIN=2
@@ -178,12 +178,12 @@ The validation script (`./scripts/validate-deployment-readiness.sh`) includes Po
 2. **Create Database**
    ```bash
    # Connect to PostgreSQL pod
-   kubectl exec -it -n my-namespace deployment/my-namespace-dx-postgres -- psql -U postgres
+  kubectl exec -it -n <namespace> deployment/<postgres-deployment-name> -- psql -U postgres
    
   # If generated, run SQL from docs/DATABASE_SETUP.md
-   CREATE DATABASE my_project;
-   CREATE USER my_project WITH PASSWORD 'changeme';
-   GRANT ALL PRIVILEGES ON DATABASE my_project TO my_project;
+  CREATE DATABASE <database-name>;
+  CREATE USER <database-username> WITH PASSWORD '<database-password>';
+  GRANT ALL PRIVILEGES ON DATABASE <database-name> TO <database-username>;
    ```
 
 3. **Validate**
@@ -222,9 +222,9 @@ Instead of plain text passwords in `.env`, use K8s secrets:
 
 ```bash
 kubectl create secret generic my-project-db-credentials \
-  --from-literal=username=my_project \
-  --from-literal=password=changeme \
-  --from-literal=database=my_project \
+  --from-literal=username=<database-username> \
+  --from-literal=password=<database-password> \
+  --from-literal=database=<database-name> \
   -n my-namespace
 ```
 
@@ -310,19 +310,19 @@ DB_CONNECTION_TIMEOUT_MS=5000 # Timeout for new connections
 
 3. Test from within cluster:
    ```bash
-   kubectl run -it --rm psql-test --image=postgres:15 -n my-namespace -- \
-     psql -h my-namespace-dx-postgres -p 5432 -U postgres
+  kubectl run -it --rm psql-test --image=postgres:15 -n <namespace> -- \
+    psql -h <postgres-service-name> -p 5432 -U postgres
    ```
 
 4. Port forward and test locally:
    ```bash
-   kubectl port-forward -n my-namespace svc/my-namespace-dx-postgres 5432:5432 &
-   PGPASSWORD=changeme psql -h localhost -p 5432 -U my_project -d my_project
+  kubectl port-forward -n <namespace> svc/<postgres-service-name> 5432:5432 &
+  PGPASSWORD=<database-password> psql -h localhost -p 5432 -U <database-username> -d <database-name>
    ```
 
 ### Database Does Not Exist
 
-**Issue:** `FATAL: database "my_project" does not exist`
+**Issue:** `FATAL: database "<database-name>" does not exist`
 
 **Solution:** Create the database using `docs/DATABASE_SETUP.md` if init generated it, or follow the SQL examples in this guide
 
@@ -332,10 +332,10 @@ DB_CONNECTION_TIMEOUT_MS=5000 # Timeout for new connections
 
 **Solution:** Grant schema permissions:
 ```sql
-\c my_project
-GRANT ALL ON SCHEMA public TO my_project;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO my_project;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO my_project;
+\c <database-name>
+GRANT ALL ON SCHEMA public TO <database-username>;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO <database-username>;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO <database-username>;
 ```
 
 ### Connection Pool Exhausted
@@ -350,14 +350,14 @@ GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO my_project;
 
 2. Check for connection leaks:
    ```sql
-   SELECT count(*) FROM pg_stat_activity WHERE datname='my_project';
+  SELECT count(*) FROM pg_stat_activity WHERE datname='<database-name>';
    ```
 
 3. Increase PostgreSQL max_connections:
    ```bash
-   kubectl exec -n my-namespace deployment/my-namespace-dx-postgres -- \
+  kubectl exec -n <namespace> deployment/<postgres-deployment-name> -- \
      psql -U postgres -c "ALTER SYSTEM SET max_connections = 200;"
-   kubectl rollout restart deployment/my-namespace-dx-postgres -n my-namespace
+  kubectl rollout restart deployment/<postgres-deployment-name> -n <namespace>
    ```
 
 ## References

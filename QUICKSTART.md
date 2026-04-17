@@ -102,9 +102,9 @@ async analyzeAsset(
 
 ```bash
 PORT=3000
-API_KEY=your-secure-api-key
-EXTERNAL_API_URL=https://your-service.com/api
-EXTERNAL_API_KEY=your-external-key
+API_KEY=<api-key>
+EXTERNAL_API_URL=<external-api-url>
+EXTERNAL_API_KEY=<external-api-key>
 LOG_LEVEL=info
 ```
 
@@ -157,9 +157,9 @@ The template includes a complete CI/CD pipeline in `.github/workflows/ci.yml`.
 
 **Required GitHub Secrets:**
 ```
-DOCKER_REGISTRY=your-registry.com
-DOCKER_USERNAME=your-username
-DOCKER_PASSWORD=your-password
+DOCKER_REGISTRY=<registry-host>
+DOCKER_USERNAME=<registry-username>
+DOCKER_PASSWORD=<registry-password>
 KUBE_CONFIG=<base64-encoded-kubeconfig>
 ```
 
